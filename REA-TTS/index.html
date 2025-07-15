@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Speech Synthesis Model Comparison</title>
+  <style>
+    body {
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      margin: 0;
+      background-color: #ffffff;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(to right, #1e5799, #2ec194);
+      color: white;
+      padding: 60px 20px 40px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+
+    header p {
+      font-size: 1rem;
+      margin-top: 10px;
+      color: #e0e0e0;
+    }
+
+    main {
+      padding: 40px 20px;
+      max-width: 1020px;
+      margin: auto;
+    }
+
+    h2 {
+      color: #1e8e3e;
+      margin-top: 50px;
+    }
+
+    p {
+      margin-bottom: 1em;
+      font-size: 1.05rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      margin-bottom: 40px;
+      font-size: 0.95rem;
+    }
+
+    th,
+    td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f0f0f0;
+      font-weight: bold;
+    }
+
+    tr:hover {
+      background-color: #f9f9f9;
+    }
+
+    audio {
+      width: 100%;
+    }
+
+    img {
+      max-width: 100%;
+      margin: 20px 0;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .arch-image {
+      width: 60%;
+      height: auto;
+      display: block;
+      margin: 20px auto;
+    }
+
+    .sample-block {
+      margin-bottom: 40px;
+      padding: 20px;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      background-color: #fafafa;
+    }
+
+    .sample-text {
+      font-size: 1.05rem;
+      font-weight: 500;
+      margin-bottom: 15px;
+      color: #2c3e50;
+    }
+
+    .audio-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .audio-block {
+      flex: 1 1 200px;
+      max-width: 240px;
+      text-align: center;
+    }
+
+    .model-name {
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #3c7c6e;
+    }
+  </style>
+
+</head>
+
+<body>
+  <header>
+    <h1>REA-TTS: Retrieval-Augmented Expressive Audiobook Text-to-Speech Generation<br>
+      with Contrastive Language-Audio Learning</h1>
+    <p>Qihang Lu, Bingsong Bai, Yingming Gao, Jinlong Xue, Ya Li</p>
+  </header>
+
+  <main>
+    <h2>Abstract</h2>
+    <p>
+      In recent years, speech synthesis technology can already synthesize sentence-level speech with highly human emotional prosody based on reference speech. However, achieving highly natural, expressive audiobook speech synthesis remains a considerable challenge. To improve the expression of synthesized audiobook speech based on reference speech, we proposed REA-TTS(Retrieval-augmented Expressive Audiobook TTS), a high-expressivity speech synthesis method that rivals human speech in timbre, prosody, and emotional expression for long text synthesis. We adapted contrastive learning and retrieval-augmented generation (RAG) to an end-to-end speech synthesis framework. The framework integrates sentiment contrast learning and reference audio retrieval. It aligns audio and text sentiment embeddings into the same latent space. Then, it uses cosine similarity to retrieve the audio that corresponds to the text as reference audio. This process enhances the naturalness and expressiveness of audiobook speech synthesis. Furthermore, we constructed a concatenated reference speech process, which can improve prosody change. Our proposed method outperforms baseline systems in both intonation naturalness and emotional expressivity, effectively improving the overall perceptual quality of synthesized speech.
+    </p>
+
+    <h2>Model Architecture</h2>
+    <img src="imgs/overall.png" alt="Model Architecture" class="arch-image" />
+
+    <h2>Training Process of CLAP Retrieval Module</h2>
+    <img src="imgs/clap_training.png" alt="CLAP Retrieval Module Training Process" class="arch-image" />
+
+    <h2>Chunked Long-text Synthesis Process in REA-TTS</h2>
+    <img src="imgs/tts_infer.png" alt="Inference Process of REA-TTS" class="arch-image" />
+
+    <h2>Single-sentence Synthesis Examples</h2>
+    <div id="group1-table"></div>
+
+
+    <h2>Audiobook Synthesis Examples</h2>
+    <div id="group2-table"></div>
+  </main>
+
+  <script>
+    async function loadTextData(groupPath) {
+      const response = await fetch(`${groupPath}/text.json`);
+      if (!response.ok) {
+        console.error(`Failed to load ${groupPath}/text.json`);
+        return {};
+      }
+      return await response.json();
+    }
+
+    function generateTable(containerId, groupPath, data, modelNames) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = ""; // 清空原内容
+
+      const keys = Object.keys(data).sort((a, b) => Number(a) - Number(b));
+      keys.forEach((key, idx) => {
+        const text = data[key] || `Text ${key}`;
+        const sampleBlock = document.createElement("div");
+        sampleBlock.className = "sample-block";
+
+        // 文本段
+        const textEl = document.createElement("p");
+        textEl.className = "sample-text";
+        textEl.textContent = `${idx + 1}. Text: ${text}`;
+        sampleBlock.appendChild(textEl);
+
+        // 音频区域（只保留 modelNames 指定的模型）
+        const audioRow = document.createElement("div");
+        audioRow.className = "audio-row";
+
+        modelNames.forEach(model => {
+          const audioBlock = document.createElement("div");
+          audioBlock.className = "audio-block";
+
+          const label = document.createElement("div");
+          label.className = "model-name";
+          label.textContent = model;
+          audioBlock.appendChild(label);
+
+          const audio = document.createElement("audio");
+          audio.controls = true;
+          audio.src = `${groupPath}/${model}/${key}.wav`;
+          audioBlock.appendChild(audio);
+
+          audioRow.appendChild(audioBlock);
+        });
+
+        sampleBlock.appendChild(audioRow);
+        container.appendChild(sampleBlock);
+      });
+    }
+
+
+    async function init() {
+      const groupConfigs = [
+        { id: "group1-table", path: "sentence", models: ["GPT-SoVITS", "CosyVoice2_Random", "CosyVoice2_Retrieval"] },
+        { id: "group2-table", path: "audiobook", models: ["Random", "MiniLM", "REA-TTS"] } // 举例不同模型名
+      ];
+
+      for (const group of groupConfigs) {
+        const data = await loadTextData(group.path);
+        generateTable(group.id, group.path, data, group.models);
+      }
+    }
+
+    init();
+  </script>
+</body>
+
+</html>

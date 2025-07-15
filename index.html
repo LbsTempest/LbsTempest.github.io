@@ -1,29 +1,70 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>Search Engine</title>
-    <link rel="stylesheet" href="search.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>欢迎来到我的GitHub Pages网站</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px 0;
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .container {
+            padding: 40px 20px;
+        }
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
+
     <header>
-        <div class="search-container">
-            <input type="text" placeholder="Search...">
-            <button type="submit">Search</button>
-            <div class="suggestions">
-                <ul>
-                    <li><a href="#">Suggestion 1</a></li>
-                    <li><a href="#">Suggestion 2</a></li>
-                    <li><a href="#">Suggestion 3</a></li>
-                    <li><a href="#">Suggestion 4</a></li>
-                    <li><a href="#">Suggestion 5</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="time-container">
-            <p><span id="time"></span></p>
-        </div>
+        <h1>欢迎来到我的个人网站</h1>
     </header>
-    <script src="search.js"></script>
+
+    <div class="container">
+        <p>这是我的 GitHub Pages 网站。点击下面的按钮进入项目页面。</p>
+        <a href="REA-TTS/index.html" class="btn">进入 REA-TTS 页面</a>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 由 lbstempest 提供</p>
+    </footer>
+
 </body>
 </html>

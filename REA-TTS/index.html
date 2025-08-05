@@ -132,29 +132,61 @@
   <header>
     <h1>REA-TTS: Retrieval-Augmented Expressive Audiobook Text-to-Speech Generation<br>
       with Contrastive Language-Audio Learning</h1>
-    <p>Qihang Lu, Bingsong Bai, Yingming Gao, Jinlong Xue, Ya Li</p>
+    <p>Qihang Lu, Bingsong Bai, Jinlong Xue, Ya Li, Yingming Gao</p>
   </header>
 
   <main>
     <h2>Abstract</h2>
     <p>
-      In recent years, speech synthesis technology can already synthesize sentence-level speech with highly human emotional prosody based on reference speech. However, achieving highly natural, expressive audiobook speech synthesis remains a considerable challenge. To improve the expression of synthesized audiobook speech based on reference speech, we proposed REA-TTS(Retrieval-augmented Expressive Audiobook TTS), a high-expressivity speech synthesis method that rivals human speech in timbre, prosody, and emotional expression for long text synthesis. We adapted contrastive learning and retrieval-augmented generation (RAG) to an end-to-end speech synthesis framework. The framework integrates sentiment contrast learning and reference audio retrieval. It aligns audio and text sentiment embeddings into the same latent space. Then, it uses cosine similarity to retrieve the audio that corresponds to the text as reference audio. This process enhances the naturalness and expressiveness of audiobook speech synthesis. Furthermore, we constructed a concatenated reference speech process, which can improve prosody change. Our proposed method outperforms baseline systems in both intonation naturalness and emotional expressivity, effectively improving the overall perceptual quality of synthesized speech.
+      In recent years, speech synthesis technology can already synthesize sentence-level speech with highly human
+      emotional prosody based on reference speech. However, achieving highly natural, expressive audiobook speech
+      synthesis remains a considerable challenge. To improve the expression of synthesized audiobook speech based on
+      reference speech, we proposed REA-TTS(Retrieval-augmented Expressive Audiobook TTS), a high-expressivity speech
+      synthesis method that rivals human speech in timbre, prosody, and emotional expression for long text synthesis. We
+      adapted contrastive learning and retrieval-augmented generation (RAG) to an end-to-end speech synthesis framework.
+      The framework integrates sentiment contrast learning and reference audio retrieval. It aligns audio and text
+      sentiment embeddings into the same latent space. Then, it uses cosine similarity to retrieve the audio that
+      corresponds to the text as reference audio. This process enhances the naturalness and expressiveness of audiobook
+      speech synthesis. Furthermore, we constructed a concatenated reference speech process, which can improve prosody
+      change. Our proposed method outperforms baseline systems in both intonation naturalness and emotional
+      expressivity, effectively improving the overall perceptual quality of synthesized speech.
     </p>
 
     <h2>Model Architecture</h2>
     <img src="imgs/overall.png" alt="Model Architecture" class="arch-image" />
+    <p><b>Fig 1. Overall architecture of REA-TTS.</b> The REA-TTS system consists of three main modules: a candidate
+      reference database construction module, a CLAP reference module, and a speech synthesis module. For a
+      user-provided text, the RAG module, based on contrastive learning, retrieves emotionally appropriate reference
+      audio from the database. This audio is then used by the TTS module to synthesize the final audiobook speech.</p>
 
     <h2>Training Process of CLAP Retrieval Module</h2>
     <img src="imgs/clap_training.png" alt="CLAP Retrieval Module Training Process" class="arch-image" />
+    <p><b>Fig 2. Training process of CLAP retrieval module.</b> The CLAP module is trained to align text and speech
+      emotion embeddings in the same latent space. It uses a text encoder and an audio encoder to project features into
+      a shared space. The model is trained using a contrastive loss function (InfoNCE) to maximize the similarity
+      between corresponding text-audio pairs and minimize it for non-matching pairs.</p>
 
     <h2>Chunked Long-text Synthesis Process in REA-TTS</h2>
     <img src="imgs/tts_infer.png" alt="Inference Process of REA-TTS" class="arch-image" />
+    <p><b>Fig 3. Overview of the chunked long-text synthesis process in REA-TTS.</b> For long-form text, the system
+      splits the text into sentence-level units. For each unit, the CLAP module retrieves a suitable reference audio
+      segment. These segments are then concatenated to form a coherent and emotionally varied reference audio sequence,
+      which is fed into the speech synthesis model to generate the final output.</p>
 
     <h2>Single-sentence Synthesis Examples</h2>
+    <p>This section presents a comparison of different single-sentence speech synthesis models. We compare our proposed
+      method with two baseline models. <b>GPT-SoVITS</b> is a powerful zero-shot voice cloning model.
+      <b>CosyVoice2_Random</b> uses the CosyVoice2 model with a randomly selected reference audio.
+      <b>CosyVoice2_Retrieval</b> is our proposed method, which uses CosyVoice2 with reference audio retrieved by our
+      CLAP module.</p>
     <div id="group1-table"></div>
 
 
     <h2>Audiobook Synthesis Examples</h2>
+    <p>This section demonstrates the performance of our system on audiobook synthesis, comparing different retrieval
+      methods. <b>Random</b> selects reference audio randomly. <b>MiniLM</b> uses a pure text-based retrieval method
+      (all-MiniLM-L6-v2). <b>REA-TTS</b> is our proposed method using the CLAP-based retrieval module to select
+      emotionally appropriate reference audio, leading to more expressive and coherent speech.</p>
     <div id="group2-table"></div>
   </main>
 
